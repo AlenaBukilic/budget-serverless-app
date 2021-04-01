@@ -27,13 +27,23 @@ interface TodosState {
   todos: Todo[]
   newTodoName: string
   loadingTodos: boolean
+  budget: number
 }
 
 export class Todos extends React.PureComponent<TodosProps, TodosState> {
   state: TodosState = {
     todos: [],
     newTodoName: '',
-    loadingTodos: true
+    loadingTodos: true,
+    budget: 0
+  }
+
+  calculateBalance = (todos: Todo[]) => {
+      let budget: number = 0;
+      todos.forEach((todo) => {
+          budget = todo.done ? (budget - Number(todo.name)) : (budget + Number(todo.name))
+      })
+      return budget;
   }
 
   handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -85,7 +95,7 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
         })
       })
     } catch {
-      alert('Todo deletion failed')
+      alert('Todo update failed')
     }
   }
 
@@ -104,7 +114,7 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
   render() {
     return (
       <div>
-        <Header as="h1">TODOs</Header>
+        <Header as="h1">Balance: {this.calculateBalance(this.state.todos)}</Header>
 
         {this.renderCreateTodoInput()}
 
@@ -116,23 +126,36 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
   renderCreateTodoInput() {
     return (
       <Grid.Row>
-        <Grid.Column width={16}>
-          <Input
-            action={{
-              color: 'teal',
-              labelPosition: 'left',
-              icon: 'add',
-              content: 'New task',
-              onClick: this.onTodoCreate
-            }}
-            fluid
-            actionPosition="left"
-            placeholder="To change the world..."
-            onChange={this.handleNameChange}
-          />
+        <Grid.Column align="center">
+            <Input
+                align="left"
+                action={{
+                    color: 'green',
+                    labelPosition: 'left',
+                    icon: 'add',
+                    content: 'Income',
+                    onClick: this.onTodoCreate
+                }}
+                actionPosition="left"
+                placeholder="100"
+                onChange={this.handleNameChange}
+            />
+            <Input
+                align="right"
+                action={{
+                    color: 'red',
+                    labelPosition: 'left',
+                    icon: 'add',
+                    content: 'Expense',
+                    onClick: this.onTodoCreate
+                }}
+                actionPosition="left"
+                placeholder="100"
+                onChange={this.handleNameChange}
+            />
         </Grid.Column>
         <Grid.Column width={16}>
-          <Divider />
+            <Divider />
         </Grid.Column>
       </Grid.Row>
     )
@@ -150,7 +173,7 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
     return (
       <Grid.Row>
         <Loader indeterminate active inline="centered">
-          Loading TODOs
+          Loading budget...
         </Loader>
       </Grid.Row>
     )
@@ -180,7 +203,7 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
                   color="blue"
                   onClick={() => this.onEditButtonClick(todo.todoId)}
                 >
-                  <Icon name="pencil" />
+                  <Icon name="camera" />
                 </Button>
               </Grid.Column>
               <Grid.Column width={1} floated="right">
