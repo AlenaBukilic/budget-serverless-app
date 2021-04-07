@@ -1,6 +1,6 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "title": "todo",
+    "title": "budget",
     "type": "object",
     "properties": {
         "createdAt": {
@@ -9,16 +9,15 @@
         "userId": {
             "type": "string"
         },
-        "todoId": {
+        "budgetItemId": {
             "type": "string"
         },
-        "name": {
-            "type": "string"
+        "amount": {
+            "type": "number",
+            "minLength": 1,
+            "maxLength": 20
         },
-        "dueDate": {
-            "type": "string"
-        },
-        "done": {
+        "income": {
             "type": "boolean"
         },
         "attachmentUrl": {
@@ -26,7 +25,7 @@
         }
     },
     "required": [
-        "name", "dueDate"
+        "amount", "income"
     ],
     "additionalProperties": false
 }

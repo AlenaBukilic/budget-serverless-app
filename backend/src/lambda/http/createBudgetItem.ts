@@ -2,8 +2,8 @@ require('source-map-support').install();
 
 import { APIGatewayProxyEvent, Handler, APIGatewayProxyResult } from 'aws-lambda'
 import * as uuid from 'uuid';
-import { createTodoItem } from '../../bussinesLayer/todo';
-import { CreateTodoRequest } from '../../requests/CreateTodoRequest'
+import { createBudgetItem } from '../../bussinesLogic/budget';
+import { CreateBudgetItemRequest } from '../../requests/CreateBudgetItemRequest'
 import { getUserId } from '../utils';
 import { createLogger } from '../../utils/logger';
 
@@ -13,21 +13,22 @@ export const handler: Handler = async (event: APIGatewayProxyEvent): Promise<API
 
     logger.info('Processing event: ', event);
 
-    const newTodo: CreateTodoRequest = JSON.parse(event.body)
+    const newBudgetItem: CreateBudgetItemRequest = JSON.parse(event.body)
 
     const userId = getUserId(event);
 
     const itemId = uuid.v4();
 
     const newItem = {
-        ...newTodo,
-        todoId: itemId,
+        ...newBudgetItem,
+        amount: Number(newBudgetItem.amount),
+        budgetItemId: itemId,
         userId,
         createdAt: new Date().toISOString(),
-        done: false,
+        attachmentUrl: ''
     }
 
-    await createTodoItem(newItem);
+    await createBudgetItem(newItem);
 
     return {
         statusCode: 201,

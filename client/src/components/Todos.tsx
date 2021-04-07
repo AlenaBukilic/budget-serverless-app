@@ -41,7 +41,7 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
   calculateBalance = (todos: Todo[]) => {
       let budget: number = 0;
       todos.forEach((todo) => {
-          budget = todo.done ? (budget - Number(todo.name)) : (budget + Number(todo.name))
+          budget = !todo.income ? (budget - Number(todo.amount)) : (budget + Number(todo.amount))
       })
       return budget;
   }
@@ -50,31 +50,53 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
     this.setState({ newTodoName: event.target.value })
   }
 
-  onEditButtonClick = (todoId: string) => {
-    this.props.history.push(`/todos/${todoId}/edit`)
+  onEditButtonClick = (budgetItemId: string) => {
+    this.props.history.push(`/budgets/${budgetItemId}/edit`)
   }
 
-  onTodoCreate = async (event: React.ChangeEvent<HTMLButtonElement>) => {
+  onTodoCreateIncome = async (event: React.ChangeEvent<HTMLButtonElement>) => {
     try {
-      const dueDate = this.calculateDueDate()
-      const newTodo = await createTodo(this.props.auth.getIdToken(), {
-        name: this.state.newTodoName,
-        dueDate
-      })
-      this.setState({
-        todos: [...this.state.todos, newTodo],
-        newTodoName: ''
-      })
-    } catch {
-      alert('Todo creation failed')
-    }
+        if (!this.state.newTodoName) {
+            alert('Input cannot be empty.');
+            return;
+        }
+        const newTodo = await createTodo(this.props.auth.getIdToken(), {
+            amount: Number(this.state.newTodoName),
+            income: true
+        })
+        this.setState({
+            todos: [...this.state.todos, newTodo],
+            newTodoName: ''
+        })
+        } catch {
+        alert('Todo creation failed')
+        }
+  }
+
+  onTodoCreateExp = async (event: React.ChangeEvent<HTMLButtonElement>) => {
+    try {
+        if (!this.state.newTodoName) {
+            alert('Input cannot be empty.');
+            return;
+        }
+        const newTodo = await createTodo(this.props.auth.getIdToken(), {
+            amount: Number(this.state.newTodoName),
+            income: false
+        })
+        this.setState({
+            todos: [...this.state.todos, newTodo],
+            newTodoName: ''
+        })
+        } catch {
+        alert('Todo creation failed')
+        }
   }
 
   onTodoDelete = async (todoId: string) => {
     try {
       await deleteTodo(this.props.auth.getIdToken(), todoId)
       this.setState({
-        todos: this.state.todos.filter(todo => todo.todoId != todoId)
+        todos: this.state.todos.filter(todo => todo.budgetItemId != todoId)
       })
     } catch {
       alert('Todo deletion failed')
@@ -84,14 +106,12 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
   onTodoCheck = async (pos: number) => {
     try {
       const todo = this.state.todos[pos]
-      await patchTodo(this.props.auth.getIdToken(), todo.todoId, {
-        name: todo.name,
-        dueDate: todo.dueDate,
-        done: !todo.done
+      await patchTodo(this.props.auth.getIdToken(), todo.budgetItemId, {
+        income: !todo.income
       })
       this.setState({
         todos: update(this.state.todos, {
-          [pos]: { done: { $set: !todo.done } }
+          [pos]: { income: { $set: !todo.income } }
         })
       })
     } catch {
@@ -134,7 +154,7 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
                     labelPosition: 'left',
                     icon: 'add',
                     content: 'Income',
-                    onClick: this.onTodoCreate
+                    onClick: this.onTodoCreateIncome
                 }}
                 actionPosition="left"
                 placeholder="100"
@@ -147,7 +167,7 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
                     labelPosition: 'left',
                     icon: 'add',
                     content: 'Expense',
-                    onClick: this.onTodoCreate
+                    onClick: this.onTodoCreateExp
                 }}
                 actionPosition="left"
                 placeholder="100"
@@ -184,24 +204,24 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
       <Grid padded>
         {this.state.todos.map((todo, pos) => {
           return (
-            <Grid.Row key={todo.todoId}>
+            <Grid.Row key={todo.budgetItemId}>
               <Grid.Column width={1} verticalAlign="middle">
                 <Checkbox
                   onChange={() => this.onTodoCheck(pos)}
-                  checked={todo.done}
+                  checked={!todo.income}
                 />
               </Grid.Column>
-              <Grid.Column width={10} verticalAlign="middle">
-                {todo.name}
+              <Grid.Column width={10} verticalAlign="middle" color={todo.income ? "green" : "red"}>
+                {todo.amount}
               </Grid.Column>
               <Grid.Column width={3} floated="right">
-                {todo.dueDate}
+                {this.formateDate(todo.createdAt)}
               </Grid.Column>
               <Grid.Column width={1} floated="right">
                 <Button
                   icon
                   color="blue"
-                  onClick={() => this.onEditButtonClick(todo.todoId)}
+                  onClick={() => this.onEditButtonClick(todo.budgetItemId)}
                 >
                   <Icon name="camera" />
                 </Button>
@@ -210,7 +230,7 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
                 <Button
                   icon
                   color="red"
-                  onClick={() => this.onTodoDelete(todo.todoId)}
+                  onClick={() => this.onTodoDelete(todo.budgetItemId)}
                 >
                   <Icon name="delete" />
                 </Button>
@@ -228,10 +248,9 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
     )
   }
 
-  calculateDueDate(): string {
-    const date = new Date()
-    date.setDate(date.getDate() + 7)
+  formateDate(date: Date): string {
+    const newDate = new Date(date);
 
-    return dateFormat(date, 'yyyy-mm-dd') as string
+    return newDate.toUTCString() as string
   }
 }

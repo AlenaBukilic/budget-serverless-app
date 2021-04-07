@@ -1,20 +1,20 @@
 require('source-map-support').install();
 
 import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } from 'aws-lambda';
-import { deleteTodoItem } from '../../bussinesLayer/todo';
+import { deleteBudgetItem } from '../../bussinesLogic/budget';
 import { getUserId } from '../utils';
 import { createLogger } from '../../utils/logger';
 
-const logger = createLogger('createTodo');
+const logger = createLogger('deleteBudgetItem');
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
 
     logger.info("Delete handler called for event: ", event)
 
-    const { todoId } = event.pathParameters;
+    const { budgetItemId } = event.pathParameters;
     const userId = getUserId(event);
 
-    await deleteTodoItem(userId, todoId);
+    await deleteBudgetItem(userId, budgetItemId);
     return {
         statusCode: 200,
         headers: {

@@ -1,8 +1,8 @@
 export interface Todo {
-  todoId: string
-  createdAt: string
-  name: string
-  dueDate: string
-  done: boolean
-  attachmentUrl?: string
+    budgetItemId: string
+    userId: string
+    createdAt: Date
+    amount: number
+    income: boolean
+    attachmentUrl?: string
 }

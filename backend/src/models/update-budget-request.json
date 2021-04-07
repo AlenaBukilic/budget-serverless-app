@@ -1,0 +1,14 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "update-budget",
+    "type": "object",
+    "properties": {
+        "attachmentUrl": {
+            "type": "string"
+        },
+        "income": {
+            "type": "boolean"
+        }
+    },
+    "additionalProperties": false
+  }

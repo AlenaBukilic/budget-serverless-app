@@ -2,26 +2,25 @@ require('source-map-support').install();
 
 import { APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda';
 
-import { UpdateTodoRequest } from '../../requests/UpdateTodoRequest';
+import { UpdateBudgetItemRequest } from '../../requests/UpdateBudgetItemRequest';
 import { createLogger } from '../../utils/logger';
-import { updateTodoItemForUser } from '../../bussinesLayer/todo';
+import { updateBudgetItemForUser } from '../../bussinesLogic/budget';
 import { getUserId } from '../utils';
 
-const logger = createLogger('updateTodo')
+const logger = createLogger('updateBudgetItem')
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
 
     logger.info("Processing event", event);
 
-    const { todoId } = event.pathParameters;
-    const updatedTodo: UpdateTodoRequest = JSON.parse(event.body);
+    const { budgetItemId } = event.pathParameters;
+    const updatedTodo: UpdateBudgetItemRequest = JSON.parse(event.body);
 
     const updatedItem = {
-        ...updatedTodo,
-        done: true
+        ...updatedTodo
     }
 
-    await updateTodoItemForUser(getUserId(event), todoId, updatedItem)
+    await updateBudgetItemForUser(getUserId(event), budgetItemId, updatedItem)
 
     return {
         statusCode: 200,
