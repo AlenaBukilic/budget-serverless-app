@@ -12,14 +12,14 @@ The application should store budget items, and each budget item contains the fol
 - `budgetItemId` (string) - a unique id for an item
 - `createdAt` (string) - date and time when an item was created
 - `amount` (number) - name of a budget item (e.g. 1000)
-- `type` (boolean) - true if an item was income, false if expense
+- `income` (boolean) - true if an item was income, false if expense
 - `attachmentUrl` (string) (optional) - a URL pointing to an image attached to a TODO item
 
 # Frontend
 
-The `client` folder contains a web application that can use the API that should be developed in the project.
+The `client` folder contains a web application that uses the API.
 
-This frontend should work with your serverless application once it is developed, you don't need to make any changes to the code. The only file that you need to edit is the `config.ts` file in the `client` folder. This file configures your client application just as it was done in the course and contains an API endpoint and Auth0 configuration:
+The `config.ts` file contains AWS API endpoint and Auth0 configuration:
 
 ```ts
 const apiId = '...' API Gateway id
@@ -34,7 +34,7 @@ export const authConfig = {
 
 ## Authentication
 
-Authentication is implemented using Auth0 application and using asymmetrically encrypted JWT tokens.
+Authentication is implemented using Auth0 application, using asymmetrically encrypted JWT tokens.
 
 ## Logging
 
