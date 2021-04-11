@@ -13,7 +13,7 @@ The application should store budget items, and each budget item contains the fol
 - `createdAt` (string) - date and time when an item was created
 - `amount` (number) - name of a budget item (e.g. 1000)
 - `income` (boolean) - true if an item was income, false if expense
-- `attachmentUrl` (string) (optional) - a URL pointing to an image attached to a TODO item
+- `attachmentUrl` (string) (optional) - a URL pointing to an image attached to a budget item
 
 # Frontend
 
