@@ -6,13 +6,11 @@ import Auth from './auth/Auth'
 import { EditBudgetItem } from './components/EditBudgetItem'
 import { LogIn } from './components/LogIn'
 import { NotFound } from './components/NotFound'
-import { Todos } from './components/Todos'
-
-export interface AppProps {}
+import { BudgetItems } from './components/BudgetItems'
 
 export interface AppProps {
-  auth: Auth
-  history: any
+  auth: Auth;
+  history: any;
 }
 
 export interface AppState {}
@@ -92,7 +90,7 @@ export default class App extends Component<AppProps, AppState> {
           path="/"
           exact
           render={props => {
-            return <Todos {...props} auth={this.props.auth} />
+            return <BudgetItems {...props} auth={this.props.auth} />
           }}
         />
 

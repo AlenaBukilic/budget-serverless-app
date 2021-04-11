@@ -1,10 +1,10 @@
 import { apiEndpoint } from '../config'
-import { Todo } from '../types/Todo';
-import { CreateTodoRequest } from '../types/CreateTodoRequest';
+import { BudgetItem } from '../types/BudgetItem';
+import { CreateBudgetItemRequest } from '../types/CreateBudgetItemRequest';
 import Axios from 'axios'
-import { UpdateTodoRequest } from '../types/UpdateTodoRequest';
+import { UpdateBudgetItemRequest } from '../types/UpdateBudgetItemRequest';
 
-export async function getTodos(idToken: string): Promise<Todo[]> {
+export async function getBudgetItems(idToken: string): Promise<BudgetItem[]> {
   console.log('Fetching budgets')
 
   const response = await Axios.get(`${apiEndpoint}/budgets`, {
@@ -17,11 +17,11 @@ export async function getTodos(idToken: string): Promise<Todo[]> {
   return response.data.items
 }
 
-export async function createTodo(
+export async function createBudgetItem(
   idToken: string,
-  newTodo: CreateTodoRequest
-): Promise<Todo> {
-  const response = await Axios.post(`${apiEndpoint}/budgets`,  JSON.stringify(newTodo), {
+  newBudgetItem: CreateBudgetItemRequest
+): Promise<BudgetItem> {
+  const response = await Axios.post(`${apiEndpoint}/budgets`,  JSON.stringify(newBudgetItem), {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${idToken}`
@@ -30,12 +30,12 @@ export async function createTodo(
   return response.data.item
 }
 
-export async function patchTodo(
+export async function patchBudgetItem(
   idToken: string,
   budgetItemId: string,
-  updatedTodo: UpdateTodoRequest
+  updatedBudgetItem: UpdateBudgetItemRequest
 ): Promise<void> {
-  const response = await Axios.patch(`${apiEndpoint}/budgets/${budgetItemId}`, JSON.stringify(updatedTodo), {
+  const response = await Axios.patch(`${apiEndpoint}/budgets/${budgetItemId}`, JSON.stringify(updatedBudgetItem), {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${idToken}`
@@ -44,7 +44,7 @@ export async function patchTodo(
   console.log('updateeeeee', response.data);
 }
 
-export async function deleteTodo(
+export async function deleteBudgetItem(
   idToken: string,
   budgetItemId: string
 ): Promise<void> {

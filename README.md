@@ -2,7 +2,7 @@
 
 This application will allow creating/removing/updating/fetching budget items. Each budget item can optionally have an attachment image. Each user only has access to budget items that he/she has created. Budget items are income or expense. The UI shows total balance for a user.
 
-Developed using serverless framework, AWS Lambda, API Gateway, DynamoDB
+Developed using serverless framework, CloudFormation, AWS Lambda, API Gateway, DynamoDB
 
 # Budget items
 
